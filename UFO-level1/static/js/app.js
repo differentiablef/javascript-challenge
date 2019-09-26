@@ -13,9 +13,9 @@ var tableData = data;
  */
 function populate_table
 (date=undefined) {
-    let ubody=d3.select("#ufo-table>tbody"),   // select table body
-        dt=new Date(date),           // attempt to parse `date`
-        filter_func=(x) => true; // set default filter function
+    let ubody=d3.select("#ufo-table>tbody"), // select table body
+        filter_func=(x) => true, // set default filter function
+        dt=new Date(date); // attempt to parse `date`
     
     // if not undefined, check that the date is valid
     if( date !== undefined ) {
@@ -67,6 +67,7 @@ function populate_table
  */
 function filter_button_onclick
 () {
+    // prevent default behavior 
     d3.event.preventDefault();
     
     // extract value of `#datetime` element
@@ -74,8 +75,6 @@ function filter_button_onclick
     
     // call populate_table passing `dvalue` as `date`
     populate_table(dvalue);
-
-    return;
 }
 
 // setup event handlers
