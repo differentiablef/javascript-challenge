@@ -57,7 +57,7 @@ body {
   margin-top: 50px;
 }
 
-.filters .card-body {
+.card-body {
   padding: 0;
 }
 
@@ -74,7 +74,7 @@ select {
 }
 
 #table-area th {
-  text-align: center;
+  text-align: left;
 }
 
 #table-area th:first-child,
@@ -227,16 +227,15 @@ select {
 
 /* XXX: Local additions */
 
-.dropdown button {
-    text-align: left;
-    width:100%;
-    display: block;
-}
-
-.dropdown .dropdown-menu {
+.dropright .dropdown-menu {
     height: auto;
     max-height: 200px;
     overflow-x: hidden;
     padding-bottom: 0px;
-    padding-top: 0px;
+    padding-top: 0px; 
+}
+
+
+.dropright .dropdown-menu .dropdown-item {
+    height: 2em;
 }

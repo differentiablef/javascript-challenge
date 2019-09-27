@@ -62,6 +62,89 @@ function extract_values(objects)
 }
 
 
+/* 
+ * Name: append_control 
+ * Synop: ...
+ */
+function append_control(elm, control)
+{
+    let item, attrs;
+    
+    switch(control.type) {
+    case 'options':
+        let button, menu, option;
+
+        // filters.select('#options')
+
+        // add container for new dropdown selector
+        item = elm.append('div').attr('class', 'dropright');
+    
+        // create dropdown selector toggle button
+        button = item.append('button');
+        attrs = { 'id': `${control.key}-button`,
+                  'type': 'button',
+                  'class':
+                    'dropdown-toggle btn btn-secondary btn-sm form-control text-right',
+                  'aria-haspopup': 'true',
+                  'aria-expanded': 'false',
+                  'data-toggle': 'dropdown' };
+    
+        // set button attributes
+        Object.entries(attrs).forEach(([k,v]) => button.attr(k,v))
+    
+        // add button label
+        button.html(`${control.label}`);
+            /*.append('span')
+            .attr('class', 'glyphicon glyphicon-chevron-right'); */
+    
+        // create dropdown selector menu
+        menu = item.append('div');
+        attrs = {'class': 'dropdown-menu',
+                 'aria-labelledby': `${control.key}-button`};
+    
+        // set menu attributes
+        Object.entries(attrs).forEach(([k,v]) => menu.attr(k,v))
+
+        // add checkboxs for elements of `control.values`
+        menu.data( control.values ).enter
+        control.values.forEach(
+            value => {
+                option = menu.append('a');
+                attrs = {'data-key': control.key,
+                         'data-value': value,
+                         'href': '#',
+                         'class':
+                            'dropdown-item form-control'};
+
+                // set menu option attributes
+                Object.entries(attrs).forEach(([k,v]) => option.attr(k,v))
+                
+                // add label and checkbox
+                option.append('input').attr('type', 'checkbox');
+                option.append('label').html(`&nbsp;${value.toUpperCase()}`);
+            }
+        );
+        break;
+
+    case 'text':
+        let input, label;
+        item = elm.append('div').attr('class','form-group');
+        //item = filters.append('li').attr('class', 'list-group-item');
+        label = item.append('label').html(`${control.label} `)
+        input = item.append('input');
+        attrs = {'data-key': control.key,
+                 'type': 'text',
+                 'placeholder': control.placeholder,
+                 'class': 'form-control form-control-sm'};
+        Object.entries(attrs).forEach(([k,v])=>input.attr(k,v));
+        break;
+    
+    default:
+        break;
+    }
+}
+
+
 /*
  * Name: update_table
  * Synop:
@@ -75,26 +158,85 @@ function update_table()
     // select table body
     body = d3.select("#ufo-table>tbody");
 
-    // clear table body
-    body.html('');
-
     // build function to filter data
     valid_entry =
         build_filter(conditions);
     
-    // filter data using currently selected conditions
-    let valid = data.filter( valid_entry );
+    // filter data using constructed function
+    let valid = data.filter(valid_entry);
+    
+    // clear and populate table with contents of `valid`
+    body.html('')
+        .selectAll('tr')
+        .data(valid).enter()
+        .append('tr')
+        .selectAll('td')
+        .data(Object.values).enter()
+        .append('td')
+        .html(v => v.toString().toUpperCase());
+}
 
-    // populate table with contents of `valid`
-    valid.forEach(
-        (entry) => {
-            let row = body.append('tr');
-            Object.entries(entry).forEach(
-                ([key, value]) => {
-                    let cell = row.append('td');
-                    cell.html(value.toString().toUpperCase());
-                });
-        });
+
+/* 
+ * Name: menu_option_onclick
+ * Synop: updates the appropriate attribute of `conditions`
+ *     using the 'data-key' and 'data-value' attributes of the 
+ *     event target.
+ */
+function menu_option_onclick()
+{
+    // prevent default behavior 
+    d3.event.preventDefault();
+
+    console.log('I\'m not insane?');
+    // select target and extract attributes
+    let target = d3.select(this),
+        key = target.attr('data-key'),
+        val = target.attr('data-value'),
+        checkbox = target.select('input'),
+        idx = conditions[key].indexOf(val);
+
+    // is this condition already selected?
+    if (idx > -1) {
+        // if so, then unset it and remove it from `conditions[key]`
+        conditions[key].splice(idx, 1);
+        setTimeout(x => checkbox.property( 'checked', false ), 0);
+        // NOTE: setTimeout used because of drawing bullshit.
+    } else {
+        // if not, then set it and update `conditions[key]`
+        conditions[key].push(val);
+        setTimeout(x => checkbox.property( 'checked', true ), 0);
+
+    }
+
+    // redraw is needed
+    target.dispatch('blur');
+    return false;
+}
+
+/* 
+ * Name: text_input_onchange
+ * Synop: handle 'change' event for an input of type 'text' and
+ *    updating `conditions`.
+ */
+function text_input_onchange()
+{
+    // inhibit default event handler
+    d3.event.preventDefault();
+
+    // extract relevant information
+    let target = d3.select(this),
+        value = target.property('value'),
+        key = target.attr('data-key');
+
+    // update appropriate attribute of `conditions`
+    if(value.length > 0)
+        conditions[key] = [value];
+    else
+        conditions[key] = [];
+    
+    // (there is only one input element; the previous is fine.)
+    return false;
 }
 
 
@@ -111,49 +253,14 @@ function apply_filter_onclick()
     
     // update the contents of the table
     update_table();
+    return;
 }
-
-/* 
- * Name: menu_option_onclick
- * Synop: updates the appropriate attribute of `conditions`
- *     using the 'data-key' and 'data-value' attributes of the 
- *     event target.
- */
-function menu_option_onclick()
-{
-    // prevent default behavior 
-    d3.event.preventDefault();
-
-    // select target and extract attributes
-    let target = d3.select(this),
-        key = target.attr('data-key'),
-        val = target.attr('data-value'),
-        checkbox = target.select('input'),
-        idx = conditions[key].indexOf(val);
-
-    // is this condition already selected?
-    if (idx > -1) {
-        // if so, then unset it and remove it from `conditions[key]`
-        conditions[key].splice(idx, 1);
-        setTimeout(x => checkbox.property( 'checked', false ), 0);
-    } else {
-        // if not, then set it and update `conditions[key]`
-        conditions[key].push(val);
-        setTimeout(x => checkbox.property( 'checked', true ), 0);
-    }
-
-    // redraw is needed
-    target.dispatch('blur');
-    
-    return false;
-}
-
 
 
 var data = data; /* from data.js */
 
 var values = {},     /* Holds sets of values which occur as attributes in data*/
-    controls = {},   /* Holds display labels and filter panel elements */
+    controls = {},   /* Holds information on filter panel elements */
     conditions = {}; /* Holds conjunctive normal form of filtering criteria */
 
 /*
@@ -171,7 +278,7 @@ conditions = { datetime: [],
                shape: [] };
 
 /*
- * Collects values witnessed stored in some attribute 
+ * Collects values witnessed as some attribute 
  *   of a member of `data`
  */
 
@@ -192,116 +299,36 @@ controls = [{ label: 'Date:',
               type: 'text',
               placeholder: 'Charlotte' },
 
-            { label: 'State',
-              key: 'state',
-              type: 'choices',
-              values: values.state },
-            
             { label: 'Country',
               key: 'country',
-              type: 'choices',
+              type: 'options',
               values: values.country },
-      
-            { key: 'shape',
-              type: 'choices',
-              values: values.shape,
-              label: 'Shape' }];
+            
+            { label: 'State',
+              key: 'state',
+              type: 'options',
+              values: values.state },
+           
+            { label: 'Shape',
+              key: 'shape',
+              type: 'options',
+              values: values.shape }];
                    
-                  
-var filters = d3.select('#filters');
 
-/*
-item = filters.append('li')
-.attr('id', 'datetime')
-    .attr('class', 'filter list-group-item');
+/* 
+ * Create Search "Filter Results" Form
+ */
 
-item.append('label').text('Date:');
-item.append('input')
-    .attr('data-key', 'datetime')
-    .attr('class', 'form-control form-control-sm');
-*/
+controls.forEach(obj=>append_control(d3.select(`#filters>.${obj.type}`), obj));
 
-let control = controls[2];
-
-
-function construct_control(control)
-{
-    switch(control.type) {
-    case 'choices':
-        let button, menu, option, item, attrs;
-
-        // add container for new dropdown selector
-        item = filters.select('#select').append('div').attr('class', 'dropdown');
-    
-        // create dropdown selector toggle button
-        button = item.append('button');
-        attrs = { 'id': `${control.key}-button`,
-                  'type': 'button',
-                  'class': 'dropdown-toggle btn btn-default btn-sm',
-                  'aria-haspopup': 'true',
-                  'aria-expanded': 'false',
-                  'data-toggle': 'dropdown' };
-    
-        // set button attributes
-        Object.entries(attrs).forEach(([k,v]) => button.attr(k,v))
-    
-        // add button label and icon
-        button.html(`${control.label} `)
-            .append('span')
-            .attr('class', 'glyphicon glyphicon-chevron-right'); 
-    
-        // create dropdown selector menu
-        menu = item.append('div');
-        attrs = { 'class': 'dropdown-menu',
-                  'aria-labelledby': `${control.key}-button` };
-    
-        // set menu attributes
-        Object.entries(attrs).forEach(([k,v]) => menu.attr(k,v))
-
-        // add checkboxs for elements of `control.values`
-        control.values.forEach(
-            value => {
-                option = menu.append('a');
-                attrs = { 'data-key': control.key,
-                          'data-value': value,
-                          'href': '#',
-                          'class':
-                             'dropdown-item form-control form-control-sm' };
-
-                // set menu option attributes
-                Object.entries(attrs).forEach(([k,v]) => option.attr(k,v))
-                
-                // add label and checkbox
-                option.append('input').attr('type', 'checkbox');
-                option.append('label').html(`&nbsp;${value.toUpperCase()}`);
-            }
-        );
-        break;
-
-    case 'text':
-        let item, input, label, attrs;
-        
-        item = filters.append('li').attr('class', 'list-group-item');
-        
-        label = item.append('label').html(`${control.label} `)
-        input = item.append('input');
-        attrs = { 'data-key': control.key,
-                  'type': 'text',
-                  'placeholder': control.placeholder,
-                  'class': 'form-control form-control-sm' };
-        Object.entries(attrs).forEach(([k,v])=>input.attr(k,v));
-        break;
-    
-    default:
-        break;
-    }
-}
-
-
-/* Setup Event Handlers */
+/* 
+ * Connect Event Handlers 
+ */
+console.log('events');
 d3.select("#filter-btn").on('click', apply_filter_onclick);
 d3.select('#filter-form').on('submit', apply_filter_onclick);
 d3.selectAll('.dropdown-menu>a').on('click', menu_option_onclick);
+d3.selectAll('.text>input').on('change', text_input_onchange);
 
 // populate table with initial data
 update_table();
