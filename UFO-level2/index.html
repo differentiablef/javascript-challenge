@@ -5,7 +5,10 @@
   <meta charset="utf-8">
   <title>UFO Finder</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">-->
+
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/superhero/bootstrap.min.css">
+
   <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
   <link rel="stylesheet" href="static/css/style.css">
 </head>
@@ -21,71 +24,71 @@
         </div>
       </div>
     </nav>
+    <!--
     <div class="hero text-center">
       <h1>UFO Sightings</h1>
       <p>The Truth is Out There</p>
     </div>
+    -->
     <div class="container">
       <div class="row margin-top-50">
         <div class="col-md-2">
-          <aside class="filters">
-            <div class="panel panel-default">
-              <div class="panel-heading">Filter Search</div>
-              <div class="panel-body text-center">
-                <form>
-                  <div class="form-group text-left">
-                    <ul class="list-group" id="filters">
-                      
-                      <li class="filter list-group-item">
-                        <label for="date">Enter a Date</label>
-                        <input class="form-control" id="datetime" type="text" placeholder="1/11/2011">
-                      </li>
-
-                      <li class="filter list-group-item">
-                        <label for="city">Enter a City</label>
-                        <input class="form-control" id="city" type="text" placeholder="1/11/2011">
-                      </li>
-
-                      <li class="filter list-group-item">
-                        <label for="state">Select a State</label>
-                        <input class="form-control" id="state" type="text" placeholder="1/11/2011">
-                      </li>
-                      
-                      <li class="filter list-group-item">
-                        <label for="country">Select a Country</label>
-                        <input class="form-control" id="country" type="text" placeholder="1/11/2011">
-                      </li>
-
-                      <li class="filter list-group-item">
-                        <label for="shape">Select a Shape</label>
-                        <input class="form-control" id="shape" type="text" placeholder="1/11/2011">
-                      </li>
-                      
-                    </ul>
-                  </div>
-                  <button id="filter-btn" type="button" class="btn btn-default">Filter Table</button>
-                </form>
-              </div>
+          <!-- start of card -->
+          <div class="card card-default filters"> 
+            
+            <div class="card-header">Filter Results</div>
+            <div class="card-body">
+              <form id="filter-form">
+                <div class="form-group text-left">
+                  
+                  <ul id="filters" class="list-group">
+                    <li class="list-group-item">
+                      <label>Date:</label>
+                      <input class="form-control form-control-sm" data-key="datetime" type="text" placeholder="1/11/2011">
+                    </li>
+                    
+                    <li class="filter list-group-item">
+                      <label for="city">City:</label>
+                      <input class="form-control form-control-sm" id="city" type="text" placeholder="Charlotte">
+                    </li>
+                    
+                    <li id="select" class="filter list-group-item">
+                      <label>Options:</label>
+                    </li>
+                  </ul>
+                  
+                  <button id="filter-btn" type="button" class="btn btn-default form-control">
+                    Apply Filter
+                  </button>
+                  
+                </div>
+              </form>
             </div>
-          </aside>
+          </div>
+          <!-- end of card -->
+          
         </div>
         <div class="col-md-10">
-          <div id="table-area" class="">
+          
+          <!-- begin table contents -->
+          <div id="table-area">
             <table id="ufo-table" class="table table-striped">
               <thead>
                 <tr>
-                  <th class="table-head">Date</th>
-                  <th class="table-head">City</th>
-                  <th class="table-head">State</th>
-                  <th class="table-head">Country</th>
-                  <th class="table-head">Shape</th>
-                  <th class="table-head">Duration</th>
-                  <th class="table-head">Comments</th>
+                  <th scope="col" class="table-head">Date</th>
+                  <th scope="col" class="table-head">City</th>
+                  <th scope="col" class="table-head">State</th>
+                  <th scope="col" class="table-head">Country</th>
+                  <th scope="col" class="table-head">Shape</th>
+                  <th scope="col" class="table-head">Duration</th>
+                  <th scope="col" class="table-head">Comments</th>
                 </tr>
               </thead>
               <tbody></tbody>
             </table>
           </div>
+          <!-- end table contents -->
+          
         </div>
       </div>
     </div>
@@ -93,6 +96,11 @@
       <span class="bottom">UFO Sightings</span>
     </footer>
   </div>
+
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" crossorigin="anonymous"></script>
+  
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.11.0/d3.js"></script>
   <script src="static/js/data.js"></script>
   <script src="static/js/app.js"></script>

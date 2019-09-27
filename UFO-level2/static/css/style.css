@@ -57,7 +57,7 @@ body {
   margin-top: 50px;
 }
 
-.filters .panel-body {
+.filters .card-body {
   padding: 0;
 }
 
@@ -222,4 +222,21 @@ select {
   to {
     opacity: 1;
   }
+}
+
+
+/* XXX: Local additions */
+
+.dropdown button {
+    text-align: left;
+    width:100%;
+    display: block;
+}
+
+.dropdown .dropdown-menu {
+    height: auto;
+    max-height: 200px;
+    overflow-x: hidden;
+    padding-bottom: 0px;
+    padding-top: 0px;
 }
