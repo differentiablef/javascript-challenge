@@ -186,7 +186,6 @@ function menu_option_onclick()
     // prevent default behavior 
     d3.event.preventDefault();
 
-    console.log('I\'m not insane?');
     // select target and extract attributes
     let target = d3.select(this),
         key = target.attr('data-key'),
@@ -233,7 +232,6 @@ function text_input_onchange()
     else
         conditions[key] = [];
     
-    // (there is only one input element; the previous is fine.)
     return false;
 }
 
@@ -242,7 +240,7 @@ function text_input_onchange()
  * Name: apply_filter_onclick
  * Synop:
  *    handles the `click` event emitted for button with id `filter-btn`.
- *    calls `populate_table`
+ *    calls `update_table`
  */
 function apply_filter_onclick()
 {
@@ -276,7 +274,7 @@ conditions = { datetime: [],
                shape: [] };
 
 /*
- * Collects values witnessed as some attribute 
+ * Collect values witnessed as some attribute 
  *   of a member of `data`
  */
 
@@ -314,7 +312,7 @@ controls = [{ label: 'Date:',
                    
 
 /* 
- * Create Search "Filter Results" Form
+ * Create "Filter Results" Form
  */
 
 controls.forEach(obj=>append_control(d3.select(`#filters>.${obj.type}`), obj));
