@@ -104,7 +104,6 @@ function append_control(elm, control)
         Object.entries(attrs).forEach(([k,v]) => menu.attr(k,v))
 
         // add checkboxs for elements of `control.values`
-        menu.data( control.values ).enter
         control.values.forEach(
             value => {
                 option = menu.append('a');
