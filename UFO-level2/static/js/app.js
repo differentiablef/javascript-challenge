@@ -74,8 +74,6 @@ function append_control(elm, control)
     case 'options':
         let button, menu, option;
 
-        // filters.select('#options')
-
         // add container for new dropdown selector
         item = elm.append('div').attr('class', 'dropright');
     
@@ -324,11 +322,14 @@ controls.forEach(obj=>append_control(d3.select(`#filters>.${obj.type}`), obj));
 /* 
  * Connect Event Handlers 
  */
-console.log('events');
-d3.select("#filter-btn").on('click', apply_filter_onclick);
+
+d3.select("#filter-btn" ).on('click',  apply_filter_onclick);
 d3.select('#filter-form').on('submit', apply_filter_onclick);
-d3.selectAll('.dropdown-menu>a').on('click', menu_option_onclick);
-d3.selectAll('.text>input').on('change', text_input_onchange);
+
+d3.select('#filters>.options')
+    .selectAll('a').on('click',  menu_option_onclick);
+d3.select('#filters>.text')
+    .selectAll('input').on('change', text_input_onchange);
 
 // populate table with initial data
 update_table();
