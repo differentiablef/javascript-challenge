@@ -146,7 +146,7 @@ function append_control(elm, control)
  * Name: update_table
  * Synop:
  *    clear body of table with id `ufo-table` and 
- *    populate with appropriately filtered data from `tableData`
+ *    populate with appropriately filtered data from `data`
  */
 function update_table()
 {
