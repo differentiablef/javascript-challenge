@@ -23,6 +23,7 @@ function buildCharts(sample_id)
     d3.json(`/samples/${sample_id}`).then(
         function (sample) {
             console.log(`Processing data for sample ${sample_id}`);
+
             let  pie = d3.select('#pie'),
                 gauge = d3.select('#gauge');
 
@@ -99,13 +100,5 @@ function optionChanged(newSample)
     buildMetadata(newSample);
 }
 
-function selDataset_onchange()
-{
-    var sel = d3.select('#selDataset');
-    optionChanged(sel.property('value'));
-}
-
 // Initialize the dashboard
-d3.select('#selDataset').on('change', selDataset_onchange);
-
 init();
