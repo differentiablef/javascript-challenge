@@ -14,7 +14,6 @@ function buildMetadata(sample_id)
             // Use `.html("") to clear any existing metadata
             metadata_panel.html('');
 
-
             let dlist = metadata_panel.append('dl');
 
             dlist.property('class', 'row');
@@ -31,6 +30,7 @@ function buildMetadata(sample_id)
             
             // BONUS: Build the Gauge Chart
             // buildGauge(data.WFREQ);
+            
 
         }
     );
