@@ -81,7 +81,7 @@ function buildCharts(sample_id)
             };
 
             layout = {
-                title: `Sample: ${sample_id}`
+                title: `Sample ID ${sample_id}`
             };
 
             Plotly.newPlot("pie", [trace], layout);
