@@ -25,7 +25,7 @@ function buildMetadata(sample_id)
             Object.entries(data).forEach(
                 function ([key, value]) {
                     dlist.append('dt').text(key).property('class', 'col-sm-3');
-                    dlist.append('dd').text(value).property('class', 'col-sm-9');
+                    dlist.append('dd').text(value).property('class', 'col-sm-3');
                 }
             );
             
@@ -35,8 +35,6 @@ function buildMetadata(sample_id)
         }
     );
 
-    // BONUS: Build the Gauge Chart
-    // buildGauge(data.WFREQ);
 }
 
 function buildCharts(sample_id)
@@ -89,10 +87,6 @@ function buildCharts(sample_id)
             Plotly.newPlot("pie", [trace], layout);
 
         }
-    );
-
-    console.log(
-        sample_id
     );
 }
 
