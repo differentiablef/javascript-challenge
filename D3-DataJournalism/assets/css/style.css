@@ -11,7 +11,7 @@ html {
 
 body {
   /* Padding bottom by footer height */
-  padding-bottom: 80px;
+    padding-bottom: 80px;
 }
 
 #footer {
@@ -28,4 +28,46 @@ body {
 #footer p {
   margin: 0;
   font-size: 16px;
+}
+
+.data-point {
+    fill: lightblue;
+    r: 10px;
+}
+
+.data-label {
+    fill: white;
+    text-anchor: middle;
+    font-family: 'Source Code Pro', monospace;
+    font-size: 0.6875rem;
+    font-weight: bold;
+}
+
+.tic-label {
+    line-height: 1.0;
+    font-family: 'Source Code Pro', monospace;
+    font-size: 0.6875rem;
+    font-weight: normal;
+}
+
+.ytic-label {
+    text-anchor: end;
+}
+
+
+.xtic-label {
+    text-anchor: middle;
+}
+
+.x-label {
+    text-anchor: middle;
+    font-weight: bold;
+    font-size: 1em;
+}
+
+
+.y-label {
+    text-anchor: middle;
+    font-weight: bold;
+    font-size: 1em;
 }
