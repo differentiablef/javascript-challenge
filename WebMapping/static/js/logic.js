@@ -1,41 +1,45 @@
-// Store our API endpoint inside queryUrl
+// Store our API endpoint inside data_path
 var data_path = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/1.0_week.geojson";
 
-// Perform a GET request to the query URL
+// color map used on magnitude
+var color_map = new Rainbow();
+var data = undefined; // debuging
+// request data from data_path
 d3.json(
     data_path,
-    function(data)
-    {
-        // Once we get a response, send the data.features object to the createFeatures function
-        createFeatures(data.features);
-    }
+    (objs) => {data = objs;  createFeatures(objs.features);}
 );
+var max_mag = 7.0,
+    min_mag = 1.0;
 
 function createFeatures(earthquakeData)
 {
 
-    // Define a function we want to run once for each feature in the features array
-    // Give each feature a popup describing the place and time of the earthquake
+    
+    // function runs once for each feature in the features array
+    // gives each feature a popup describing the place and time
+    //     of the earthquake
     function onEachFeature(feature, layer)
     {
         layer.bindPopup(
-            "<h3>" + feature.properties.place + "</h3>" +
-                "<hr>" +
-                "<p> Datatime: " + new Date(feature.properties.time) + "</p>" +
-                "<p> Magnitude: " + feature.properties.mag + "</p>" 
-                
-        );
+            `<h3>${feature.properties.place}</h3><hr>` +
+                `<p> Datatime: ${new Date(feature.properties.time)}</p>` +
+                `<p> Magnitude: ${feature.properties.mag} </p>` 
+        );        
     }
 
+    // function runs once for each feature, passes in lat/lon and returns 
+    // layer which will be drawn indicating the feature on the map
     function pointToLayer(feature, latlng)
     {
+        let sval = (feature.properties.mag - min_mag)/(max_mag - min_mag);
         return L.circle(
             latlng,
             { // display attributes
-                color: "green", 
-                fillColor: "blue",
-                fillOpacity: feature.properties.mag/6,
-                radius: Math.pow(feature.properties.mag, 2)*1500
+                fillColor: `#${color_map.colorAt(100-Math.ceil(sval*50+50))}`, 
+                fillOpacity: 0.6*sval + 0.4,
+                radius: Math.pow( feature.properties.mag, 1 )* 10000,
+                stroke: false
             }
         );
     }
@@ -43,12 +47,14 @@ function createFeatures(earthquakeData)
     // Create a GeoJSON layer containing the features array on the earthquakeData object
     // Run the onEachFeature function once for each piece of data in the array
     var earthquakes = L.geoJSON(
-        earthquakeData, {
+        earthquakeData,
+        {
             onEachFeature: onEachFeature,
             pointToLayer: pointToLayer
-        });
+        }
+    );
 
-    // Sending our earthquakes layer to the createMap function
+    // Send earthquakes layer to the createMap function
     createMap(earthquakes);
 }
 
@@ -95,10 +101,37 @@ function createMap(earthquakes) {
         }
     );
 
-    // Create a layer control
-    // Pass in our baseMaps and overlayMaps
     // Add the layer control to the map
     L.control
         .layers(baseMaps, overlayMaps, {collapsed: false})
         .addTo(myMap);
+
+    // create color legend
+    var legend = L.control({position: 'bottomright'});
+
+    legend.onAdd = function (map) {
+
+	    var ldiv = L.DomUtil.create('div', 'info legend'),
+            div = d3.select(ldiv),
+		    grades = [50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100],
+		    labels = [];
+
+        div.append('div').text('Magnitude');
+
+        grades.forEach(
+            function (val)
+            {
+                div.append('i')
+                    .attr('style', `background:#${color_map.colorAt(val-50)};`);
+                div.append('div')
+                    .text(`${parseFloat((1-((val)-50)/50) * (max_mag - min_mag) + min_mag).toFixed(2)}`);
+                //div.append('br');
+            }
+        );
+        
+	    return ldiv;
+    };
+
+    legend.addTo(myMap);
 }
+
